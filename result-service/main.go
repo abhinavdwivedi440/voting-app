@@ -25,7 +25,7 @@ type Vote struct {
 
 var client *mongo.Client
 
-var l = log.New(os.Stdout, "result-app", log.LstdFlags)
+var l = log.New(os.Stdout, "result-service", log.LstdFlags)
 
 func getVotes(w http.ResponseWriter, r *http.Request) {
 

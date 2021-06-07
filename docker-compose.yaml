@@ -1,0 +1,68 @@
+version: "3.9"
+
+services:
+
+  rabbitmq:
+    image: rabbitmq:3.8-management
+    hostname: rabbit-1
+    ports:
+    - "8080:15672"
+    networks:
+      - default
+    restart: always
+
+  mongodb:
+    image: mongo
+    hostname: mongodb
+    networks:
+      - default
+    restart: always
+
+  vote-service:
+    build: ./voting-service/
+    environment:
+      - RABBIT_HOST=rabbit-1
+      - RABBIT_PORT=5672
+      - RABBIT_USERNAME=guest
+      - RABBIT_PASSWORD=guest
+    ports:
+      - "3000:3000"
+    networks:
+      - default
+    restart: always
+    depends_on:
+      - mongodb
+
+  worker-service:
+    build: ./worker/
+    environment:
+      - RABBIT_HOST=rabbit-1
+      - RABBIT_PORT=5672
+      - RABBIT_USERNAME=guest
+      - RABBIT_PASSWORD=guest
+    networks:
+      - default
+    depends_on:
+      - rabbitmq
+      - mongodb
+    restart: always
+
+  result-service:
+    build: ./result-service/
+    ports:
+    - "4000:4000"
+    networks:
+      - default
+    restart: always
+    depends_on:
+      - mongodb
+
+
+networks:
+  default:
+    external: true
+    name: rabbits
+
+
+
+# docker run -d --rm --net rabbits -p 8080:15672 --hostname rabbit-manager --name rabbit-manager rabbitmq:3.8-management

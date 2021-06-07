@@ -14,7 +14,7 @@ import (
 	"time"
 )
 
-var l = log.New(os.Stdout, "worker", log.LstdFlags)
+var l = log.New(os.Stdout, "worker-service", log.LstdFlags)
 
 var rabbit_host = os.Getenv("RABBIT_HOST")
 var rabbit_port = os.Getenv("RABBIT_PORT")
